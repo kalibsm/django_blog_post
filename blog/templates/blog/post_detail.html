@@ -1,0 +1,57 @@
+{% extends "blog/base.html" %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h1 style="font-size:1.9rem; margin-bottom:0.4rem;">{{ post.title }}</h1>
+    <div class="meta">By {{ post.author.username }} &bull; {{ post.created_at|date:"F j, Y" }}</div>
+
+    {% if post.image %}
+    <img src="{{ post.image.url }}" alt="{{ post.title }}" class="post-image">
+    {% endif %}
+
+    <div class="post-content">{{ post.content }}</div>
+
+    {% if user.is_authenticated and user == post.author or user.is_staff %}
+    <div class="post-actions">
+        <a href="{% url 'blog:post_edit' post.slug %}" class="btn btn-secondary">Edit</a>
+        <a href="{% url 'blog:post_delete' post.slug %}" class="btn btn-danger">Delete</a>
+    </div>
+    {% endif %}
+</div>
+
+<div class="comments-section">
+    <h3>{{ comments.count }} Comment{{ comments.count|pluralize }}</h3>
+
+    {% for comment in comments %}
+    <div class="comment">
+        <div class="comment-meta">{{ comment.author.username }} &bull; {{ comment.created_at|date:"F j, Y, g:i a" }}</div>
+        <p>{{ comment.content }}</p>
+    </div>
+    {% empty %}
+    <p style="color:#888; margin-bottom:1rem;">No comments yet. Be the first!</p>
+    {% endfor %}
+
+    <div class="card" style="margin-top:1.5rem;">
+        {% if user.is_authenticated %}
+        <h3 style="margin-bottom:1rem; font-size:1rem;">Leave a Comment</h3>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                {{ form.content }}
+                {% if form.content.errors %}
+                <ul class="errorlist">{% for e in form.content.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+                {% endif %}
+            </div>
+            <button type="submit" class="btn btn-primary">Post Comment</button>
+        </form>
+        {% else %}
+        <p style="color:#555;">
+            <a href="{% url 'login' %}?next={{ request.path }}">Log in</a> or
+            <a href="{% url 'blog:register' %}">register</a> to leave a comment.
+        </p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

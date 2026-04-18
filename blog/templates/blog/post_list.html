@@ -1,0 +1,27 @@
+{% extends "blog/base.html" %}
+
+{% block title %}Blog - Home{% endblock %}
+
+{% block content %}
+<h1 style="margin-bottom:1.5rem; font-size:1.8rem;">Latest Posts</h1>
+
+{% if posts %}
+    {% for post in posts %}
+    <div class="card">
+        <h2><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h2>
+        <div class="meta">By {{ post.author.username }} &bull; {{ post.created_at|date:"F j, Y" }}</div>
+        <p>{{ post.content|truncatewords:40 }}</p>
+        <div style="margin-top:0.8rem;">
+            <a href="{{ post.get_absolute_url }}" class="btn btn-primary">Read More</a>
+        </div>
+    </div>
+    {% endfor %}
+{% else %}
+    <div class="empty">
+        <p>No posts yet.</p>
+        {% if user.is_authenticated %}
+        <p style="margin-top:1rem;"><a href="{% url 'blog:post_create' %}" class="btn btn-primary">Write the first post</a></p>
+        {% endif %}
+    </div>
+{% endif %}
+{% endblock %}

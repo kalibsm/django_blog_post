@@ -1,0 +1,22 @@
+{% extends "blog/base.html" %}
+
+{% block title %}{{ action }} Post{% endblock %}
+
+{% block content %}
+<div class="form-card">
+    <h2>{{ action }} Post</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% for field in form %}
+        <div class="form-group">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.help_text %}<div class="helptext">{{ field.help_text }}</div>{% endif %}
+            {% if field.errors %}<ul class="errorlist">{% for e in field.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary">{{ action }} Post</button>
+        <a href="{% url 'blog:post_list' %}" class="btn btn-secondary" style="margin-left:0.5rem;">Cancel</a>
+    </form>
+</div>
+{% endblock %}
