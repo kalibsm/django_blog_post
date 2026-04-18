@@ -83,7 +83,12 @@
             {% if user.is_staff %}
             <li><a href="{% url 'admin:index' %}">Admin</a></li>
             {% endif %}
-            <li><a href="{% url 'logout' %}" class="btn-nav">Logout ({{ user.username }})</a></li>
+            <li>
+                <form method="post" action="{% url 'logout' %}" style="margin:0;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-nav" style="background:none;border:none;cursor:pointer;font-size:0.95rem;padding:0.3rem 0.8rem;background:#2c7a7b;color:#fff;border-radius:4px;">Logout ({{ user.username }})</button>
+                </form>
+            </li>
         {% else %}
             <li><a href="{% url 'login' %}">Login</a></li>
             <li><a href="{% url 'blog:register' %}" class="btn-nav">Register</a></li>
